@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiUrl } from '../api.js';
 import { motion } from 'framer-motion';
 import { 
   Award, Briefcase, FileText, CheckCircle2, BookOpen, 
@@ -24,7 +25,7 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    fetch('/api/applications', {
+    fetch(apiUrl('/api/applications'), {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -51,7 +52,7 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
     formData.append('resume', file);
 
     const token = localStorage.getItem('token');
-    fetch('/api/resume/upload', {
+    fetch(apiUrl('/api/resume/upload'), {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`

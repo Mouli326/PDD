@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiUrl } from '../api.js';
 import { motion } from 'framer-motion';
 import { CheckCircle2, AlertCircle, BookOpen, ExternalLink, TrendingUp, HelpCircle } from 'lucide-react';
 
@@ -131,7 +132,7 @@ export default function SkillAnalysis({ activeJobId, userSkills }) {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/jobs/${activeJobId}`)
+    fetch(apiUrl(`/api/jobs/${activeJobId}`))
       .then(res => res.json())
       .then(data => {
         setJob(data);

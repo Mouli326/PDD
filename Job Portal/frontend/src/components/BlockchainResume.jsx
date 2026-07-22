@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiUrl } from '../api.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldCheck, ShieldAlert, Cpu, Database, Award, 
@@ -43,7 +44,7 @@ export default function BlockchainResume({ user, uploadedFileName, onMintedSucce
 
   const fetchLedger = () => {
     setIsLoading(true);
-    fetch('/api/blockchain/ledger')
+    fetch(apiUrl('/api/blockchain/ledger'))
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -61,7 +62,7 @@ export default function BlockchainResume({ user, uploadedFileName, onMintedSucce
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    fetch('/api/blockchain', {
+    fetch(apiUrl('/api/blockchain'), {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -98,7 +99,7 @@ export default function BlockchainResume({ user, uploadedFileName, onMintedSucce
     setStatus('minting');
     setErrorMsg('');
 
-    fetch('/api/blockchain/mint', {
+    fetch(apiUrl('/api/blockchain/mint'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

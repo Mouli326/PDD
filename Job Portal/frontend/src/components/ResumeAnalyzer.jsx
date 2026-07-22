@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { apiUrl } from '../api.js';
 import { Upload, FileText, Check, Loader2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -43,7 +44,7 @@ export default function ResumeAnalyzer({ uploadedFileName, onUploadSuccess }) {
     const formData = new FormData();
     formData.append('resume', file);
 
-    fetch('/api/resume/upload', {
+    fetch(apiUrl('/api/resume/upload'), {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`

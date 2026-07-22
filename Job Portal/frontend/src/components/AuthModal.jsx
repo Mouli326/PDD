@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Briefcase, Check, Loader2, AlertCircle, Award } from 'lucide-react';
+import { apiUrl } from '../api.js';
 
 export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const [mode, setMode] = useState('login'); // login or register
@@ -19,7 +20,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
     setIsLoading(true);
     setErrorMsg('');
 
-    const endpoint = mode === 'register' ? '/api/auth/register' : '/api/auth/login';
+    const endpoint = apiUrl(mode === 'register' ? '/api/auth/register' : '/api/auth/login');
     const payload = mode === 'register' 
       ? { name, email, password, role }
       : { email, password };

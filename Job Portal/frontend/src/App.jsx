@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiUrl } from './api.js';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ResumeAnalyzer from './components/ResumeAnalyzer';
@@ -31,7 +32,7 @@ function App() {
       return;
     }
 
-    fetch('/api/auth/me', {
+    fetch(apiUrl('/api/auth/me'), {
       headers: {
         'Authorization': `Bearer ${token}`
       }

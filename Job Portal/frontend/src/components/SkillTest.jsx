@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { apiUrl } from '../api.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Award, CheckCircle, XCircle, Loader2, ArrowRight, HelpCircle, GraduationCap } from 'lucide-react';
 
@@ -124,7 +125,7 @@ export default function SkillTest({ user, onNavigateToJobs, onSkillAdded }) {
       return;
     }
 
-    fetch('/api/auth/add-skill', {
+    fetch(apiUrl('/api/auth/add-skill'), {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

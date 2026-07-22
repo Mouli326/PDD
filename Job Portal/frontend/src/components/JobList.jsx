@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiUrl } from '../api.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, DollarSign, Zap, ArrowUpRight, X, FileText, Check, Loader2, Award, AlertCircle } from 'lucide-react';
 
@@ -22,7 +23,7 @@ export default function JobList({ uploadedFileName, activeJobId, setActiveJobId,
 
   const fetchJobs = () => {
     setJobsLoading(true);
-    fetch(`/api/jobs?category=${filter}`)
+    fetch(apiUrl(`/api/jobs?category=${filter}`))
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -67,7 +68,7 @@ export default function JobList({ uploadedFileName, activeJobId, setActiveJobId,
       return;
     }
 
-    fetch('/api/applications', {
+    fetch(apiUrl('/api/applications'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

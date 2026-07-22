@@ -45,9 +45,9 @@ app.get('*', (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`==================================================`);
   console.log(`  HireHub: Job Portal Server Active               `);
-  console.log(`  Running on URL: http://localhost:${PORT}          `);
+  console.log(`  Running on URL: http://0.0.0.0:${PORT}          `);
   console.log(`==================================================`);
 });

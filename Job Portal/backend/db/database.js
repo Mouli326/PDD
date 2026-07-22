@@ -80,6 +80,32 @@ function initializeTables() {
         FOREIGN KEY (user_id) REFERENCES users (id)
       )
     `);
+
+    // 5. Resume Data Table (full parsed resume intelligence)
+    db.run(`
+      CREATE TABLE IF NOT EXISTS resume_data (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER UNIQUE,
+        full_name TEXT,
+        email TEXT,
+        phone TEXT,
+        location TEXT,
+        education TEXT,        -- JSON array of education entries
+        skills TEXT,           -- JSON array of detected skills
+        experience TEXT,       -- JSON array of experience entries
+        certifications TEXT,   -- JSON array of certifications
+        projects TEXT,         -- JSON array of project names
+        languages TEXT,        -- JSON array of languages
+        resume_score INTEGER DEFAULT 0,
+        ats_score INTEGER DEFAULT 0,
+        skill_match INTEGER DEFAULT 0,
+        profile_completeness INTEGER DEFAULT 0,
+        resume_path TEXT,
+        resume_name TEXT,
+        uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users (id)
+      )
+    `);
   });
 }
 

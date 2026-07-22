@@ -80,7 +80,7 @@ export default function CareerChatbot({ user, onNavigateToJobs }) {
         </div>
 
         {/* Suggestion Shortcuts */}
-        <div className="p-4 bg-black/20 border-b border-white/5 flex flex-wrap gap-2">
+        <div style={{ padding: '0.75rem 1rem', background: 'rgba(0,0,0,0.2)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
           {[
             { text: "🔍 Which job suits me?", value: "Which job suits me?" },
             { text: "💻 React Interview Prep", value: "Show me React interview prep" },
@@ -90,7 +90,13 @@ export default function CareerChatbot({ user, onNavigateToJobs }) {
             <button
               key={idx}
               onClick={() => handleSend(s.value)}
-              className="px-3.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-primary/40 rounded-full text-xs font-semibold text-text-secondary hover:text-white transition-all cursor-pointer"
+              style={{
+                padding: '0.4rem 0.875rem', borderRadius: '9999px',
+                fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer',
+                background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)',
+                border: '1px solid rgba(255,255,255,0.1)', transition: 'all 0.2s',
+                display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap'
+              }}
             >
               {s.text}
             </button>
@@ -136,18 +142,18 @@ export default function CareerChatbot({ user, onNavigateToJobs }) {
             e.preventDefault();
             handleSend();
           }} 
-          className="p-4 bg-white/5 border-t border-white/10 flex items-center gap-3"
+          style={{ padding: '0.875rem 1rem', background: 'rgba(255,255,255,0.03)', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
         >
           <input
             type="text"
             placeholder="Type a career or interview question..."
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            className="input flex-1 py-3 text-sm bg-black/45 border-white/5"
+            style={{ width: '100%', padding: '0.75rem 1rem', background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.5rem', color: 'white', fontFamily: 'inherit', fontSize: '0.875rem', outline: 'none' }}
           />
           <button 
             type="submit" 
-            className="p-3.5 bg-primary text-white rounded-xl hover:bg-primary-hover hover:scale-105 transition-all cursor-pointer flex items-center justify-center shrink-0"
+            style={{ padding: '0.75rem 1.25rem', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all 0.2s' }}
           >
             <Send size={18} />
           </button>

@@ -48,7 +48,14 @@ function App() {
       })
       .catch(err => {
         console.error('Session loading error:', err);
-        localStorage.removeItem('token');
+        const storedUser = localStorage.getItem('hirehub_user');
+        if (storedUser) {
+          try {
+            const parsed = JSON.parse(storedUser);
+            setUser(parsed);
+            setUploadedFileName(parsed.resume_name || '');
+          } catch(e) {}
+        }
         setAuthLoading(false);
       });
   }, []);

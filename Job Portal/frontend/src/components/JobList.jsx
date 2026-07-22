@@ -112,29 +112,36 @@ export default function JobList({ uploadedFileName, activeJobId, setActiveJobId,
   return (
     <section id="job-list">
       <div className="container">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-3xl font-bold mb-2">Available Positions & Openings</h2>
-            <p className="text-text-secondary">Explore high-potential roles. Click any position to view its personalized AI Skill Gap Analysis.</p>
-          </div>
-          <button className="text-primary font-semibold flex items-center gap-1 hover:gap-2 transition-all cursor-pointer bg-transparent border-none">
-            View All Openings <ArrowUpRight size={18} />
-          </button>
+        <div style={{marginBottom:'2rem'}}>
+          <h2 style={{fontSize:'clamp(1.5rem, 4vw, 2rem)', fontWeight:800, marginBottom:'0.5rem'}}>Available Positions &amp; Openings</h2>
+          <p style={{color:'var(--text-secondary)', fontSize:'0.9rem', maxWidth:'520px'}}>Explore high-potential roles. Click any position to view its personalized AI Skill Gap Analysis.</p>
         </div>
 
         {/* Filter Categories */}
-        <div className="flex flex-wrap gap-3 mb-10">
-          {['all', 'academia', 'industry'].map((cat) => (
+        <div style={{display:'flex', flexWrap:'wrap', gap:'0.625rem', marginBottom:'2.5rem'}}>
+          {[
+            { key: 'all', label: 'All Positions' },
+            { key: 'academia', label: 'Academia & Research' },
+            { key: 'industry', label: 'Industry & Tech' },
+          ].map((cat) => (
             <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-5 py-2 rounded-full font-semibold text-sm transition-all border cursor-pointer ${
-                filter === cat
-                  ? 'bg-primary border-primary text-white shadow-lg'
-                  : 'bg-white/5 border-white/10 text-text-secondary hover:bg-white/10 hover:text-white'
-              }`}
+              key={cat.key}
+              onClick={() => setFilter(cat.key)}
+              style={{
+                padding:'0.5rem 1.25rem',
+                borderRadius:'9999px',
+                fontWeight:700,
+                fontSize:'0.82rem',
+                cursor:'pointer',
+                border: filter === cat.key ? '2px solid var(--primary)' : '1px solid rgba(255,255,255,0.12)',
+                transition:'all 0.2s',
+                whiteSpace:'nowrap',
+                background: filter === cat.key ? 'var(--primary)' : 'rgba(255,255,255,0.04)',
+                color: filter === cat.key ? 'white' : 'var(--text-secondary)',
+                boxShadow: filter === cat.key ? '0 4px 14px rgba(168,85,247,0.3)' : 'none'
+              }}
             >
-              {cat === 'all' ? 'All Positions' : cat === 'academia' ? 'Academia & Research (Professors)' : 'Industry & Tech (Developers)'}
+              {cat.label}
             </button>
           ))}
         </div>

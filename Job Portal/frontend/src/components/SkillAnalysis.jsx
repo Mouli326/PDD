@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiUrl } from '../api.js';
 import { motion } from 'framer-motion';
-import { CheckCircle2, AlertCircle, BookOpen, ExternalLink, TrendingUp, HelpCircle } from 'lucide-react';
+import { CheckCircle2, AlertCircle, BookOpen, ExternalLink, TrendingUp, HelpCircle, Target, Building2, MapPin } from 'lucide-react';
 
 // Learning courses directory mapped to missing skills
 const COURSES_DIRECTORY = {
@@ -223,10 +223,28 @@ export default function SkillAnalysis({ activeJobId, userSkills }) {
           
           {/* Skill lists comparison panel */}
           <div className="flex-1">
-            <h2 className="text-3xl font-bold mb-4">Skill Gap Analysis</h2>
-            <p className="text-text-secondary mb-8">
-              Target Position: <span className="text-white font-semibold">{job.title}</span>
-            </p>
+            <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.25rem)', fontWeight: 900, marginBottom: '1rem' }}>Skill Gap Analysis</h2>
+            
+            {/* Professional Active Analysis Target Card */}
+            <div style={{ padding: '1.25rem 1.5rem', background: 'rgba(168,85,247,0.08)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ padding: '0.75rem', background: 'rgba(168,85,247,0.15)', borderRadius: '0.75rem', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Target size={24} />
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '2px' }}>Active Analysis Target</span>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'white', margin: 0 }}>{job.title}</h3>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.78rem', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)', border: '1px solid rgba(255,255,255,0.1)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <Building2 size={12} /> {job.company}
+                </span>
+                <span style={{ fontSize: '0.78rem', fontWeight: 700, padding: '4px 12px', borderRadius: '9999px', background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)', border: '1px solid rgba(255,255,255,0.1)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <MapPin size={12} /> {job.location}
+                </span>
+              </div>
+            </div>
             
             <div className="space-y-6">
               
@@ -311,24 +329,25 @@ export default function SkillAnalysis({ activeJobId, userSkills }) {
                 <motion.div 
                   key={index}
                   whileHover={{ x: 5 }}
-                  className="p-5 bg-bg-secondary border border-border rounded-2xl flex items-start gap-4 hover:border-primary/50 transition-colors"
+                  style={{padding:'1.25rem', background:'var(--bg-secondary)', border:'1px solid var(--border)', borderRadius:'1rem', display:'flex', alignItems:'flex-start', gap:'1rem', transition:'border-color 0.2s'}}
+                  className="hover:border-primary/50"
                 >
-                  <div className="p-3 bg-primary/10 rounded-xl text-primary">
-                    <BookOpen size={24} />
+                  <div style={{padding:'0.75rem', background:'rgba(168,85,247,0.12)', borderRadius:'0.75rem', color:'var(--primary)', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center'}}>
+                    <BookOpen size={22} />
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <h4 className="font-bold text-lg">{course.title}</h4>
-                      <div className="flex items-center gap-1 text-yellow-500 text-sm">
+                  <div style={{flex:1, minWidth:0}}>
+                    <div style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'0.5rem', marginBottom:'4px', flexWrap:'wrap'}}>
+                      <h4 style={{fontWeight:700, fontSize:'1rem', margin:0, lineHeight:'1.3'}}>{course.title}</h4>
+                      <div style={{display:'flex', alignItems:'center', gap:'4px', color:'#EAB308', fontSize:'0.82rem', flexShrink:0}}>
                         <span>★</span>
                         <span>{course.rating}</span>
                       </div>
                     </div>
-                    <p className="text-text-secondary text-sm mb-3">
+                    <p style={{color:'var(--text-secondary)', fontSize:'0.82rem', margin:'0 0 0.625rem 0'}}>
                       {course.provider} • {course.type}
                     </p>
-                    <button className="text-primary font-semibold text-sm flex items-center gap-1 hover:gap-2 transition-all bg-transparent border-none cursor-pointer">
-                      Enroll Now <TrendingUp size={14} />
+                    <button style={{color:'var(--primary)', fontWeight:700, fontSize:'0.82rem', display:'flex', alignItems:'center', gap:'4px', background:'none', border:'none', cursor:'pointer', padding:0}}>
+                      Enroll Now <TrendingUp size={13} />
                     </button>
                   </div>
                 </motion.div>

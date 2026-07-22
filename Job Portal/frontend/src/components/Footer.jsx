@@ -32,7 +32,7 @@ export default function Footer() {
               <div style={{ background: 'var(--primary)', padding: '0.5rem', borderRadius: '0.5rem', display: 'flex' }}>
                 <Briefcase color="white" size={20} />
               </div>
-              <span>Elevate</span>
+              <span className="gradient-text" style={{ fontWeight: 900 }}>HireHub</span>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: '1.7' }}>
               Empowering the next generation of talent through AI-driven career matching and skill development.

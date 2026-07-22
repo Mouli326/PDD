@@ -1,19 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight, Upload, Briefcase } from 'lucide-react';
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden pt-20">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/20 blur-[120px] rounded-full -z-10"></div>
-      <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-accent/20 blur-[100px] rounded-full -z-10"></div>
+    <section style={{ position: 'relative', overflow: 'hidden', paddingTop: '4rem', paddingBottom: '3rem' }}>
+      <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '600px', height: '600px', background: 'rgba(168,85,247,0.18)', filter: 'blur(120px)', borderRadius: '50%', pointerEvents: 'none', zIndex: -1 }}></div>
       
-      <div className="container text-center">
+      <div className="container" style={{ textAlign: 'center' }}>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm font-medium text-primary mb-8"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '0.5rem 1.25rem', borderRadius: '9999px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)', fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary)', marginBottom: '1.75rem' }}
         >
           <Sparkles size={16} />
           <span>AI-Powered Career Transformation</span>
@@ -23,53 +22,65 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-5xl md:text-7xl font-bold mb-6 tracking-tight"
+          style={{ fontSize: 'clamp(2.25rem, 6vw, 4.25rem)', fontWeight: 900, marginBottom: '1.25rem', letterSpacing: '-0.03em', lineHeight: 1.15 }}
         >
-          Job Portal with <br />
-          <span className="gradient-text">Skill Matching</span>
+          Smart Career Portal with <br />
+          <span className="gradient-text">Skill Gap Intelligence</span>
         </motion.h1>
         
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl text-text-secondary max-w-2xl mx-auto mb-10"
+          style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)', color: 'var(--text-secondary)', maxWidth: '640px', margin: '0 auto 2.5rem', lineHeight: 1.6 }}
         >
-          Elevate uses advanced AI to analyze your skills, identify gaps, and match you with the perfect opportunities. Resume-to-job matching with 91%+ accuracy.
+          HireHub matches your resume against academic and tech job profiles, detects skill gaps, recommends learning, and forecasts salaries with 91%+ accuracy.
         </motion.p>
         
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-wrap items-center justify-center gap-4"
+          style={{ display: 'flex', flexWrap: 'wrap', itemsCenter: 'center', justifyContent: 'center', gap: '1rem' }}
         >
-          <a href="#resume-analyzer" className="btn btn-primary px-8 py-4 text-lg">
-            Upload Your Resume
-            <ArrowRight size={20} />
+          <a 
+            href="#resume-analyzer"
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              padding: '0.875rem 2rem', borderRadius: '0.75rem',
+              fontWeight: 800, fontSize: '1rem', cursor: 'pointer',
+              background: 'var(--primary)', color: 'white', textDecoration: 'none',
+              boxShadow: '0 6px 20px rgba(168, 85, 247, 0.4)', transition: 'all 0.2s'
+            }}
+          >
+            <Upload size={18} /> Upload PDF Resume <ArrowRight size={18} />
           </a>
-          <a href="#job-list" className="btn btn-secondary px-8 py-4 text-lg">
-            Explore Jobs
+          <a 
+            href="#job-list"
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              padding: '0.875rem 2rem', borderRadius: '0.75rem',
+              fontWeight: 800, fontSize: '1rem', cursor: 'pointer',
+              background: 'rgba(255,255,255,0.06)', color: 'white', textDecoration: 'none',
+              border: '1px solid rgba(255,255,255,0.12)', transition: 'all 0.2s'
+            }}
+          >
+            <Briefcase size={18} /> Explore Job Matches
           </a>
         </motion.div>
 
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="p-6 rounded-2xl glass border border-white/5 bg-white/5">
-            <h3 className="text-3xl font-bold mb-1">91.2%</h3>
-            <p className="text-text-secondary">AI Accuracy</p>
-          </div>
-          <div className="p-6 rounded-2xl glass border border-white/5 bg-white/5">
-            <h3 className="text-3xl font-bold mb-1">50k+</h3>
-            <p className="text-text-secondary">Open Positions</p>
-          </div>
-          <div className="p-6 rounded-2xl glass border border-white/5 bg-white/5">
-            <h3 className="text-3xl font-bold mb-1">10k+</h3>
-            <p className="text-text-secondary">Courses</p>
-          </div>
-          <div className="p-6 rounded-2xl glass border border-white/5 bg-white/5">
-            <h3 className="text-3xl font-bold mb-1">200+</h3>
-            <p className="text-text-secondary">Partner Companies</p>
-          </div>
+        <div style={{ marginTop: '4rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem' }}>
+          {[
+            { stat: '91.2%', label: 'AI Accuracy' },
+            { stat: '50k+',  label: 'Open Positions' },
+            { stat: '10k+',  label: 'Curated Courses' },
+            { stat: '200+',  label: 'Partner Orgs' },
+          ].map(({ stat, label }) => (
+            <div key={label} style={{ padding: '1.25rem', borderRadius: '1rem', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', backdropFilter: 'blur(8px)' }}>
+              <h3 style={{ fontSize: '1.75rem', fontWeight: 900, margin: '0 0 4px', color: 'white' }}>{stat}</h3>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 600 }}>{label}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

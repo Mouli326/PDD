@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { 
   Award, Briefcase, FileText, CheckCircle2, BookOpen, 
   MapPin, DollarSign, Calendar, RefreshCw, Compass, ArrowRight, Sparkles, GraduationCap, ArrowLeft,
-  Video, TrendingUp, ShieldCheck
+  Video, TrendingUp, ShieldCheck, User, Mail, Phone
 } from 'lucide-react';
 import SkillTest from './SkillTest';
 
@@ -136,6 +136,59 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
         
         {/* Left Side: Profile & Readiness Score */}
         <div className="md:col-span-1 space-y-6">
+          
+          {/* Personal Profile Details Card */}
+          <div className="card p-6 border border-white/10 bg-white/5 rounded-2xl">
+            <h3 className="font-extrabold text-lg mb-4 flex items-center gap-2 text-white">
+              <User size={20} className="text-primary" /> Personal Profile Details
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(168,85,247,0.2)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', shrink: 0 }}>
+                  <User size={16} />
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'block' }}>Full Name</span>
+                  <span style={{ fontSize: '0.88rem', fontWeight: 800, color: 'white' }}>{user.name}</span>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(6,182,212,0.2)', color: '#06b6d4', display: 'flex', alignItems: 'center', justifyContent: 'center', shrink: 0 }}>
+                  <Mail size={16} />
+                </div>
+                <div style={{ overflow: 'hidden' }}>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'block' }}>Email Address</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', wordBreak: 'break-all' }}>{user.email || 'candidate@hirehub.io'}</span>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(34,197,94,0.2)', color: '#4ade80', display: 'flex', alignItems: 'center', justifyContent: 'center', shrink: 0 }}>
+                  <FileText size={16} />
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'block' }}>Active Resume Dossier</span>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: uploadedFileName ? '#4ade80' : 'var(--text-secondary)' }}>
+                    {uploadedFileName ? uploadedFileName : 'No Resume Uploaded'}
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(245,158,11,0.2)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', shrink: 0 }}>
+                  <Award size={16} />
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'block' }}>Verified Competencies</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'white' }}>
+                    {user.skills ? `${user.skills.length} Skills Synced` : '0 Skills'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Readiness Circle Widget */}
           <div className="card text-center p-8 relative overflow-hidden border border-white/5">
             <h3 className="font-bold text-lg mb-6">HireHub readiness Score</h3>
@@ -181,7 +234,7 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
             </p>
             <button 
               onClick={() => setSubView('skill-test')}
-              className="btn btn-primary w-full py-2.5 text-xs flex items-center justify-center gap-1"
+              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'var(--primary)', color: 'white', border: 'none', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }}
             >
               Take Skill Test <ArrowRight size={14} />
             </button>
@@ -196,7 +249,7 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
             </p>
             <button 
               onClick={() => onNavigateToTab('chatbot')}
-              className="btn btn-secondary w-full py-2.5 text-xs text-accent hover:text-white flex items-center justify-center gap-1"
+              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'rgba(236,72,153,0.15)', color: '#ec4899', border: '1px solid rgba(236,72,153,0.3)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }}
             >
               Open AI Career Chat <Sparkles size={14} />
             </button>
@@ -211,7 +264,7 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
             </p>
             <button 
               onClick={() => onNavigateToTab('interview')}
-              className="btn btn-secondary w-full py-2.5 text-xs text-red-400 hover:text-white flex items-center justify-center gap-1"
+              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }}
             >
               Start Video Interview <Video size={14} />
             </button>
@@ -226,7 +279,7 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
             </p>
             <button 
               onClick={() => onNavigateToTab('predictor')}
-              className="btn btn-secondary w-full py-2.5 text-xs text-green-400 hover:text-white flex items-center justify-center gap-1"
+              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'rgba(34,197,94,0.15)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.3)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }}
             >
               Open Salary Forecast <TrendingUp size={14} />
             </button>
@@ -241,7 +294,7 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
             </p>
             <button 
               onClick={() => onNavigateToTab('blockchain')}
-              className="btn btn-secondary w-full py-2.5 text-xs text-indigo-400 hover:text-white flex items-center justify-center gap-1"
+              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'rgba(99,102,241,0.15)', color: '#818cf8', border: '1px solid rgba(99,102,241,0.3)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }}
             >
               Verify on Blockchain <ShieldCheck size={14} />
             </button>
@@ -275,17 +328,35 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
                     Uploaded resume parsed successfully. <strong>{user.skills ? user.skills.length : 0} skills</strong> synced with HireHub.
                   </div>
 
-                  <label className="btn btn-secondary w-full py-2.5 text-xs cursor-pointer flex items-center justify-center gap-2">
-                    <RefreshCw size={14} className={isUploading ? 'animate-spin' : ''} />
-                    {isUploading ? "Uploading..." : "Replace Resume (PDF)"}
-                    <input 
-                      type="file" 
-                      onChange={handleDashboardResumeUpload} 
-                      accept=".pdf" 
-                      className="hidden" 
-                      disabled={isUploading}
-                    />
-                  </label>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <label style={{ flex: 1, padding: '0.625rem 0.75rem', background: 'rgba(168,85,247,0.15)', border: '1px solid rgba(168,85,247,0.3)', color: '#c084fc', borderRadius: '0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
+                      <RefreshCw size={13} className={isUploading ? 'animate-spin' : ''} />
+                      {isUploading ? "Uploading..." : "Replace PDF"}
+                      <input 
+                        type="file" 
+                        onChange={handleDashboardResumeUpload} 
+                        accept=".pdf" 
+                        className="hidden" 
+                        disabled={isUploading}
+                      />
+                    </label>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        const token = localStorage.getItem('token');
+                        if (token) {
+                          fetch(apiUrl('/api/resume/delete'), {
+                            method: 'DELETE',
+                            headers: { Authorization: `Bearer ${token}` }
+                          }).catch(e => {});
+                        }
+                        onUploadSuccess('', []);
+                      }}
+                      style={{ padding: '0.625rem 0.875rem', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', color: '#f87171', borderRadius: '0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontSize: '0.78rem', fontWeight: 700 }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="text-center py-6">

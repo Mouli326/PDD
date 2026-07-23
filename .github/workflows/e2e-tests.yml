@@ -177,30 +177,3 @@ jobs:
         with:
           name: full-e2e-report
           path: "Job Portal/e2e_framework/reports/full-e2e-report.xlsx"
-
-  build-android-apk:
-    name: Build Android Mobile APK
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Grant Executable Permission for Gradlew
-        run: chmod +x "Job Portal/android/gradlew"
-
-      - name: Build Debug APK with Gradle
-        run: |
-          cd "Job Portal/android"
-          ./gradlew assembleDebug --no-daemon
-
-      - name: Upload Android APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug-apk
-          path: "Job Portal/android/app/build/outputs/apk/debug/app-debug.apk"

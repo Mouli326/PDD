@@ -38,6 +38,13 @@ body {
   overflow-x: hidden;
 }
 
+/* Dropdown Option Theme Fix for Windows/Chrome */
+select option, select optgroup {
+  background-color: #0f1017 !important;
+  color: #f8fafc !important;
+  padding: 8px 12px !important;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

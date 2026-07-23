@@ -1,0 +1,13 @@
+{
+  "name": "hirehub-selenium-web-testing",
+  "version": "1.0.0",
+  "description": "Selenium E2E Test Automation Suite for HireHub Web (300+ Test Cases)",
+  "main": "runner.js",
+  "scripts": {
+    "test": "node runner.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "selenium-webdriver": "^4.46.0"
+  }
+}

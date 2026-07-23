@@ -3,15 +3,14 @@ import { apiUrl } from './api.js';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import ResumeAnalyzer from './components/ResumeAnalyzer';
-import JobList from './components/JobList';
-import SkillAnalysis from './components/SkillAnalysis';
+
+
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import UserDashboard from './components/UserDashboard';
 import CareerChatbot from './components/CareerChatbot';
 import MockInterview from './components/MockInterview';
 import SalaryPredictor from './components/SalaryPredictor';
-import BlockchainResume from './components/BlockchainResume';
 import LoginPage from './components/LoginPage';
 
 function App() {
@@ -48,14 +47,10 @@ function App() {
       })
       .catch(err => {
         console.error('Session loading error:', err);
-        const storedUser = localStorage.getItem('hirehub_user');
-        if (storedUser) {
-          try {
-            const parsed = JSON.parse(storedUser);
-            setUser(parsed);
-            setUploadedFileName(parsed.resume_name || '');
-          } catch(e) {}
-        }
+        localStorage.removeItem('token');
+        localStorage.removeItem('hirehub_user');
+        setUser(null);
+        setUploadedFileName('');
         setAuthLoading(false);
       });
   }, []);
@@ -114,17 +109,10 @@ function App() {
                   <ResumeAnalyzer 
                     uploadedFileName={uploadedFileName} 
                     onUploadSuccess={handleUploadSuccess}
+                    onOpenAuth={() => setIsAuthOpen(true)}
                   />
-                  <JobList 
-                    uploadedFileName={uploadedFileName} 
-                    activeJobId={activeJobId}
-                    setActiveJobId={setActiveJobId}
-                    user={user}
-                  />
-                  <SkillAnalysis 
-                    activeJobId={activeJobId} 
-                    userSkills={user ? user.skills : null}
-                  />
+
+
                 </>
               )}
 
@@ -133,6 +121,7 @@ function App() {
                   <ResumeAnalyzer 
                     uploadedFileName={uploadedFileName} 
                     onUploadSuccess={handleUploadSuccess}
+                    onOpenAuth={() => setIsAuthOpen(true)}
                   />
                 </div>
               )}
@@ -170,18 +159,6 @@ function App() {
                 <SalaryPredictor 
                   user={user} 
                   onNavigateToJobs={() => setCurrentView('landing')} 
-                />
-              )}
-
-              {currentView === 'blockchain' && (
-                <BlockchainResume 
-                  user={user}
-                  uploadedFileName={uploadedFileName}
-                  onMintedSuccess={() => {
-                    localStorage.setItem('blockchainMinted', 'true');
-                    // Force React re-render to update readiness
-                    setUser(prev => ({ ...prev }));
-                  }}
                 />
               )}
             </>

@@ -42,7 +42,7 @@ export default function Footer() {
           <div>
             <h4 style={{ fontWeight: 700, marginBottom: '1rem' }}>Platform</h4>
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-              <li style={{ cursor: 'pointer' }}>Find Jobs</li>
+              <li style={{ cursor: 'pointer' }}>Overview</li>
               <li style={{ cursor: 'pointer' }}>Skill Analysis</li>
               <li style={{ cursor: 'pointer' }}>Learning Center</li>
               <li style={{ cursor: 'pointer' }}>Resume Builder</li>

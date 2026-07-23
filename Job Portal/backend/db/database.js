@@ -123,7 +123,7 @@ function seedJobs() {
           title: "Assistant Professor of Computer Science (AI & Robotics)",
           company: "State University of Technology",
           location: "Boston, MA (Hybrid)",
-          salary: "$115,000 - $140,000 / year",
+          salary: "₹18,00,000 - ₹22,00,000 / year",
           skills: JSON.stringify(["Machine Learning", "Academic Research", "Pedagogy", "Grant Writing", "Python"]),
           description: "Lead undergraduate lectures, conduct state-of-the-art research in machine learning, and publish in top-tier journals (NeurIPS, CVPR).",
           category: "academia"
@@ -133,7 +133,7 @@ function seedJobs() {
           title: "Senior Research Scientist & Adjunct Professor",
           company: "Global AI Institute & University",
           location: "San Francisco, CA",
-          salary: "$160,000 - $195,000 / year",
+          salary: "₹25,00,000 - ₹30,00,000 / year",
           skills: JSON.stringify(["Natural Language Processing", "Scientific Publishing", "Mentorship", "TensorFlow", "PyTorch"]),
           description: "Supervise doctoral candidates, publish cutting-edge LLM architectures, and secure research grants.",
           category: "academia"
@@ -143,7 +143,7 @@ function seedJobs() {
           title: "Dean of Engineering & Computer Science",
           company: "Vanguard University",
           location: "London, UK",
-          salary: "£120,000 - £150,000 / year",
+          salary: "₹20,00,000 - ₹25,00,000 / year",
           skills: JSON.stringify(["Academic Administration", "Curriculum Development", "Strategic Leadership", "Public Speaking"]),
           description: "Define the academic and operational vision for the College of Engineering and foster corporate partnerships.",
           category: "academia"
@@ -153,7 +153,7 @@ function seedJobs() {
           title: "Senior Full Stack Developer",
           company: "TechNova Solutions",
           location: "Remote / New York",
-          salary: "$120k - $160k",
+          salary: "₹18 LPA - ₹24 LPA",
           skills: JSON.stringify(["React", "Node.js", "PostgreSQL", "AWS", "JavaScript"]),
           description: "Lead our engineering team in building scalable cloud-native applications.",
           category: "industry"
@@ -163,7 +163,7 @@ function seedJobs() {
           title: "AI/ML Engineer",
           company: "FutureMind AI",
           location: "San Francisco, CA",
-          salary: "$140k - $180k",
+          salary: "₹22 LPA - ₹28 LPA",
           skills: JSON.stringify(["Python", "PyTorch", "NLP", "TensorFlow", "Machine Learning"]),
           description: "Develop cutting-edge LLM-based features for our enterprise platform.",
           category: "industry"
@@ -173,7 +173,7 @@ function seedJobs() {
           title: "Frontend Architect",
           company: "DesignCo",
           location: "London, UK",
-          salary: "£70k - £90k",
+          salary: "₹15 LPA - ₹20 LPA",
           skills: JSON.stringify(["React", "TypeScript", "TailwindCSS", "Framer Motion", "JavaScript"]),
           description: "Define the visual and technical direction of our user interface system.",
           category: "industry"

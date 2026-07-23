@@ -1,0 +1,20 @@
+{
+  "name": "e2e-testing-framework",
+  "version": "1.0.0",
+  "description": "Full E2E Testing Framework & Report Generator (1800 Test Cases)",
+  "main": "run_all_tests.js",
+  "scripts": {
+    "test:all": "node run_all_tests.js",
+    "test:selenium": "node 01_selenium_web_tests.js",
+    "test:appium": "node 02_appium_android_tests.js",
+    "test:unit": "node 03_unit_api_tests.js",
+    "test:validation": "node 04_validation_tests.js",
+    "test:deployment": "node 05_deployment_tests.js",
+    "test:load": "node 06_load_performance_tests.js",
+    "test:compile": "node 07_master_report_compiler.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "selenium-webdriver": "^4.22.0"
+  }
+}

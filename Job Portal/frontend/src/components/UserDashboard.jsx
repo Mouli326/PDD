@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { apiUrl } from '../api.js';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Award, Briefcase, FileText, CheckCircle2, BookOpen, 
-  MapPin, DollarSign, Calendar, RefreshCw, Compass, ArrowRight, Sparkles, GraduationCap, ArrowLeft,
-  Video, TrendingUp, ShieldCheck, User, Mail, Phone
+  MapPin, IndianRupee, Calendar, RefreshCw, Compass, ArrowRight, Sparkles, GraduationCap, ArrowLeft,
+  TrendingUp, ShieldCheck, User, Mail, Zap, BarChart2, Clock, ExternalLink
 } from 'lucide-react';
 import SkillTest from './SkillTest';
 
@@ -12,99 +12,59 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
   const [applications, setApplications] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
-  const [subView, setSubView] = useState('overview'); // overview or skill-test
+  const [subView, setSubView] = useState('overview');
 
   useEffect(() => {
-    if (subView === 'overview') {
-      fetchApplications();
-    }
+    if (subView === 'overview') fetchApplications();
   }, [subView]);
 
   const fetchApplications = () => {
     setIsLoading(true);
     const token = localStorage.getItem('token');
     if (!token) return;
-
     fetch(apiUrl('/api/applications'), {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
+      headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data)) {
-          setApplications(data);
-        }
+        if (Array.isArray(data)) setApplications(data);
         setIsLoading(false);
       })
-      .catch(err => {
-        console.error('Error fetching applications:', err);
-        setIsLoading(false);
-      });
+      .catch(() => setIsLoading(false));
   };
 
   const handleDashboardResumeUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
     setIsUploading(true);
     const formData = new FormData();
     formData.append('resume', file);
-
     const token = localStorage.getItem('token');
     fetch(apiUrl('/api/resume/upload'), {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
+      headers: { 'Authorization': `Bearer ${token}` },
       body: formData
     })
       .then(res => res.json())
       .then(data => {
         setIsUploading(false);
-        if (data.skills) {
-          onUploadSuccess(data.resumeName, data.skills);
-        }
+        if (data.skills) onUploadSuccess(data.resumeName, data.skills);
       })
-      .catch(err => {
-        console.error('Error uploading from dashboard:', err);
-        setIsUploading(false);
-      });
+      .catch(() => setIsUploading(false));
   };
 
-  // Dynamically compute a readiness score based on resume status, skills, and applications
-  const computeReadinessScore = () => {
-    let score = 30; // base score for registration
-    if (uploadedFileName) score += 30; // +30% for CV
-    if (user.skills && user.skills.length > 0) {
-      score += Math.min(20, user.skills.length * 4); // +4% per skill, up to 20%
-    }
-    if (applications.length > 0) {
-      score += Math.min(10, applications.length * 5); // +5% per application, up to 10%
-    }
-    if (localStorage.getItem('interviewCompleted') === 'true') {
-      score += 10; // +10% for video interview
-    }
-    if (localStorage.getItem('blockchainMinted') === 'true') {
-      score += 10; // +10% for blockchain credentials
-    }
-    return score;
-  };
-
-  const readinessScore = computeReadinessScore();
-
-  // If taking a skill test, render the SkillTest component cleanly
+  // Skill test sub-view
   if (subView === 'skill-test') {
     return (
       <div className="container py-12">
-        <button 
+        <button
           onClick={() => setSubView('overview')}
-          className="btn btn-secondary py-2 px-4 mb-6 text-xs flex items-center gap-1 cursor-pointer"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.5rem 1rem', borderRadius: '0.5rem', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--text-secondary)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', marginBottom: '1.5rem' }}
         >
           <ArrowLeft size={14} /> Back to Dashboard
         </button>
-        <SkillTest 
-          user={user} 
+        <SkillTest
+          user={user}
           onNavigateToJobs={onBackToJobs}
           onSkillAdded={(newSkills) => onUploadSuccess(uploadedFileName, newSkills)}
         />
@@ -112,379 +72,295 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
     );
   }
 
+  // Quick stats
+  const skillCount = user?.skills?.length || 0;
+  const appliedCount = applications.length;
+  const blockchainMinted = localStorage.getItem('blockchainMinted') === 'true';
+
+  const quickStats = [
+    { label: 'Skills Verified', value: skillCount, icon: CheckCircle2, color: '#4ade80', bg: 'rgba(34,197,94,0.1)', border: 'rgba(34,197,94,0.2)' },
+    { label: 'Applications', value: appliedCount, icon: Briefcase, color: '#a78bfa', bg: 'rgba(168,85,247,0.1)', border: 'rgba(168,85,247,0.2)' },
+    { label: 'Resume Active', value: uploadedFileName ? '✓' : '—', icon: FileText, color: uploadedFileName ? '#4ade80' : '#94a3b8', bg: uploadedFileName ? 'rgba(34,197,94,0.1)' : 'rgba(255,255,255,0.05)', border: uploadedFileName ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.1)' },
+  ];
+
+  const featureCards = [
+    {
+      title: 'Skill Credential Tests',
+      desc: 'Earn verified skill badges by passing quick 3-question assessments. Badges boost your match % across job listings.',
+      icon: GraduationCap,
+      color: '#c084fc',
+      bg: 'rgba(168,85,247,0.08)',
+      border: 'rgba(168,85,247,0.2)',
+      btnBg: 'var(--primary)',
+      btnColor: 'white',
+      btnBorder: 'none',
+      action: () => setSubView('skill-test'),
+      btnLabel: 'Start Skill Test',
+    },
+    {
+      title: 'AI Career Chat',
+      desc: 'Talk to our context-aware AI assistant for mock interview prep, career advice, and job-specific guidance.',
+      icon: Sparkles,
+      color: '#f472b6',
+      bg: 'rgba(236,72,153,0.08)',
+      border: 'rgba(236,72,153,0.2)',
+      btnBg: 'rgba(236,72,153,0.15)',
+      btnColor: '#f472b6',
+      btnBorder: '1px solid rgba(236,72,153,0.3)',
+      action: () => onNavigateToTab('chatbot'),
+      btnLabel: 'Open Career AI',
+    },
+    {
+      title: 'Salary Predictor (₹)',
+      desc: 'Forecast your salary range in Indian Rupees based on role, location, experience, and tech stack competencies.',
+      icon: TrendingUp,
+      color: '#4ade80',
+      bg: 'rgba(34,197,94,0.08)',
+      border: 'rgba(34,197,94,0.2)',
+      btnBg: 'rgba(34,197,94,0.15)',
+      btnColor: '#4ade80',
+      btnBorder: '1px solid rgba(34,197,94,0.3)',
+      action: () => onNavigateToTab('predictor'),
+      btnLabel: 'Open Salary Forecast',
+    },
+  ];
+
   return (
-    <div className="container py-12">
-      {/* Header Panel */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+    <div className="container py-10">
+
+      {/* ── Page Header ── */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
         <div>
-          <span className="text-primary font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 mb-2">
-            <Award size={14} /> HireHub Candidate command center
+          <span style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+            <Award size={13} /> Candidate Command Center
           </span>
-          <h2 className="text-4xl font-bold mb-1">Welcome back, {user.name}!</h2>
-          <p className="text-text-secondary">Track your application dossier, resume intelligence parsing, and verified credentials.</p>
+          <h2 style={{ fontSize: 'clamp(1.6rem, 4vw, 2.25rem)', fontWeight: 900, color: 'white', margin: 0, lineHeight: 1.2 }}>
+            Welcome back, <span style={{ color: 'var(--primary)' }}>{user.name}</span>
+          </h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '6px' }}>
+            Track applications, manage credentials, and explore career tools.
+          </p>
         </div>
-        <button 
+        <button
           onClick={onBackToJobs}
-          className="btn btn-secondary flex items-center gap-2 hover:gap-3 transition-all"
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.75rem 1.5rem', borderRadius: '0.625rem', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'white', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s' }}
         >
-          Browse Open Positions <ArrowRight size={16} />
+          Browse Positions <ArrowRight size={15} />
         </button>
       </div>
 
-      {/* Main Grid */}
+      {/* ── Quick Stats Row ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem', marginBottom: '2.5rem' }}>
+        {quickStats.map((s, i) => {
+          const Icon = s.icon;
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.07 }}
+              style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: '1rem', padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.875rem' }}
+            >
+              <div style={{ padding: '0.625rem', background: 'rgba(0,0,0,0.2)', borderRadius: '0.625rem', color: s.color, display: 'flex' }}>
+                <Icon size={20} />
+              </div>
+              <div>
+                <div style={{ fontSize: '1.4rem', fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: 600, marginTop: '2px' }}>{s.label}</div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* ── Main Grid ── */}
       <div className="grid md:grid-cols-3 gap-8">
-        
-        {/* Left Side: Profile & Readiness Score */}
-        <div className="md:col-span-1 space-y-6">
-          
-          {/* Personal Profile Details Card */}
-          <div className="card p-6 border border-white/10 bg-white/5 rounded-2xl">
-            <h3 className="font-extrabold text-lg mb-4 flex items-center gap-2 text-white">
-              <User size={20} className="text-primary" /> Personal Profile Details
-            </h3>
+
+        {/* ── Left Column: Profile + Feature Cards ── */}
+        <div className="md:col-span-1 space-y-5">
+
+          {/* Profile Card */}
+          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1.25rem', padding: '1.5rem' }}>
+            {/* Avatar */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
+              <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(168,85,247,0.2)', border: '2px solid rgba(168,85,247,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', fontWeight: 900, color: 'var(--primary)', flexShrink: 0 }}>
+                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <div>
+                <p style={{ fontSize: '1rem', fontWeight: 800, color: 'white', margin: 0 }}>{user.name}</p>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>{user.email}</p>
+              </div>
+            </div>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(168,85,247,0.2)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', shrink: 0 }}>
-                  <User size={16} />
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'block' }}>Full Name</span>
-                  <span style={{ fontSize: '0.88rem', fontWeight: 800, color: 'white' }}>{user.name}</span>
-                </div>
-              </div>
+              {[
+                { label: 'Active Resume', value: uploadedFileName || 'No resume uploaded', icon: FileText, ok: !!uploadedFileName },
+                { label: 'Verified Skills', value: `${skillCount} skill${skillCount !== 1 ? 's' : ''} synced`, icon: CheckCircle2, ok: skillCount > 0 },
+                { label: 'Applications Sent', value: `${appliedCount} submitted`, icon: Briefcase, ok: appliedCount > 0 },
+              ].map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.625rem 0.875rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.625rem', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <Icon size={15} style={{ color: item.ok ? '#4ade80' : 'var(--text-secondary)', flexShrink: 0 }} />
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', margin: 0, fontWeight: 600 }}>{item.label}</p>
+                      <p style={{ fontSize: '0.8rem', color: 'white', fontWeight: 700, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.value}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(6,182,212,0.2)', color: '#06b6d4', display: 'flex', alignItems: 'center', justifyContent: 'center', shrink: 0 }}>
-                  <Mail size={16} />
+            {/* Upload Resume Button */}
+            <div style={{ marginTop: '1rem' }}>
+              {uploadedFileName ? (
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <label style={{ flex: 1, padding: '0.625rem 0.75rem', background: 'rgba(168,85,247,0.12)', border: '1px solid rgba(168,85,247,0.25)', color: '#c084fc', borderRadius: '0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', fontSize: '0.75rem', fontWeight: 700 }}>
+                    <RefreshCw size={12} className={isUploading ? 'animate-spin' : ''} />
+                    {isUploading ? 'Uploading...' : 'Replace PDF'}
+                    <input type="file" onChange={handleDashboardResumeUpload} accept=".pdf" className="hidden" disabled={isUploading} />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const token = localStorage.getItem('token');
+                      if (token) fetch(apiUrl('/api/resume/delete'), { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+                      onUploadSuccess('', []);
+                    }}
+                    style={{ padding: '0.625rem 0.75rem', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171', borderRadius: '0.5rem', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700 }}
+                  >
+                    Delete
+                  </button>
                 </div>
-                <div style={{ overflow: 'hidden' }}>
-                  <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'block' }}>Email Address</span>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', wordBreak: 'break-all' }}>{user.email || 'candidate@hirehub.io'}</span>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(34,197,94,0.2)', color: '#4ade80', display: 'flex', alignItems: 'center', justifyContent: 'center', shrink: 0 }}>
-                  <FileText size={16} />
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'block' }}>Active Resume Dossier</span>
-                  <span style={{ fontSize: '0.82rem', fontWeight: 700, color: uploadedFileName ? '#4ade80' : 'var(--text-secondary)' }}>
-                    {uploadedFileName ? uploadedFileName : 'No Resume Uploaded'}
-                  </span>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(245,158,11,0.2)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', shrink: 0 }}>
-                  <Award size={16} />
-                </div>
-                <div>
-                  <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, display: 'block' }}>Verified Competencies</span>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'white' }}>
-                    {user.skills ? `${user.skills.length} Skills Synced` : '0 Skills'}
-                  </span>
-                </div>
-              </div>
+              ) : (
+                <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '0.75rem', background: 'var(--primary)', color: 'white', borderRadius: '0.5rem', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700 }}>
+                  <FileText size={14} className={isUploading ? 'animate-spin' : ''} />
+                  {isUploading ? 'Uploading...' : 'Upload Resume PDF'}
+                  <input type="file" onChange={handleDashboardResumeUpload} accept=".pdf" className="hidden" disabled={isUploading} />
+                </label>
+              )}
             </div>
           </div>
 
-          {/* Readiness Circle Widget */}
-          <div className="card text-center p-8 relative overflow-hidden border border-white/5">
-            <h3 className="font-bold text-lg mb-6">HireHub readiness Score</h3>
-            
-            <div className="relative inline-flex items-center justify-center mb-6">
-              {/* Circular Gauge */}
-              <svg className="w-36 h-36 transform -rotate-90">
-                <circle 
-                  cx="72" cy="72" r="64" 
-                  className="stroke-white/5 fill-none" 
-                  strokeWidth="8"
-                />
-                <circle 
-                  cx="72" cy="72" r="64" 
-                  className="stroke-primary fill-none transition-all duration-1000" 
-                  strokeWidth="8"
-                  strokeDasharray={2 * Math.PI * 64}
-                  strokeDashoffset={2 * Math.PI * 64 * (1 - readinessScore / 100)}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute text-3xl font-extrabold text-white">
-                {readinessScore}%
+          {/* Skill Tags */}
+          {user.skills && user.skills.length > 0 && (
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1.25rem', padding: '1.25rem' }}>
+              <p style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.75rem' }}>Registered Skills</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', maxHeight: '130px', overflowY: 'auto' }}>
+                {user.skills.map((skill, si) => (
+                  <span key={si} style={{ padding: '3px 10px', background: 'rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 700, color: '#c084fc' }}>
+                    {skill}
+                  </span>
+                ))}
               </div>
             </div>
+          )}
 
-            <p className="text-sm text-text-secondary mb-4">
-              {readinessScore < 50 
-                ? "Upload a PDF resume in the Command Center to parse your skills and instantly increase your matching score."
-                : readinessScore < 85 
-                ? "Excellent progress! Take interactive quizzes below to earn verified credentials and enhance your matching score."
-                : "Outstanding readiness! Your profile is highly competitive for elite listings."}
-            </p>
-          </div>
-
-          {/* Interactive Feature Entry Cards */}
-          <div className="card p-6 bg-gradient-to-br from-primary/10 to-transparent border-primary/20">
-            <h3 className="font-extrabold text-lg mb-2 flex items-center gap-2 text-white">
-              <GraduationCap size={20} className="text-primary animate-pulse" /> Skill Credentials
-            </h3>
-            <p className="text-xs text-text-secondary mb-4 leading-relaxed">
-              Verify your Python, React, or ML skills by completing small quizzes. Earn verified badges shown on your matches!
-            </p>
-            <button 
-              onClick={() => setSubView('skill-test')}
-              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'var(--primary)', color: 'white', border: 'none', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }}
-            >
-              Take Skill Test <ArrowRight size={14} />
-            </button>
-          </div>
-
-          <div className="card p-6 bg-gradient-to-br from-accent/10 to-transparent border-accent/20">
-            <h3 className="font-extrabold text-lg mb-2 flex items-center gap-2 text-white">
-              <Sparkles size={20} className="text-accent" /> AI Career Guidance
-            </h3>
-            <p className="text-xs text-text-secondary mb-4 leading-relaxed">
-              Stuck on interview prep? Talk with our customized AI Chatbot to receive job matches and practice questionnaires.
-            </p>
-            <button 
-              onClick={() => onNavigateToTab('chatbot')}
-              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'rgba(236,72,153,0.15)', color: '#ec4899', border: '1px solid rgba(236,72,153,0.3)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }}
-            >
-              Open AI Career Chat <Sparkles size={14} />
-            </button>
-          </div>
-
-          <div className="card p-6 bg-gradient-to-br from-red-500/10 to-transparent border-red-500/20">
-            <h3 className="font-extrabold text-lg mb-2 flex items-center gap-2 text-white">
-              <Video size={20} className="text-red-400" /> Video Interview Prep
-            </h3>
-            <p className="text-xs text-text-secondary mb-4 leading-relaxed">
-              Unlock video resume scoring and custom tech diagnostics by practicing path-based interactive mock interviews.
-            </p>
-            <button 
-              onClick={() => onNavigateToTab('interview')}
-              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }}
-            >
-              Start Video Interview <Video size={14} />
-            </button>
-          </div>
-
-          <div className="card p-6 bg-gradient-to-br from-green-500/10 to-transparent border-green-500/20">
-            <h3 className="font-extrabold text-lg mb-2 flex items-center gap-2 text-white">
-              <TrendingUp size={20} className="text-green-400" /> Salary Predictor
-            </h3>
-            <p className="text-xs text-text-secondary mb-4 leading-relaxed">
-              Calculate expected salaries, track hiring hot spots, and evaluate technical skill premiums recursively.
-            </p>
-            <button 
-              onClick={() => onNavigateToTab('predictor')}
-              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'rgba(34,197,94,0.15)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.3)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }}
-            >
-              Open Salary Forecast <TrendingUp size={14} />
-            </button>
-          </div>
-
-          <div className="card p-6 bg-gradient-to-br from-indigo-500/10 to-transparent border-indigo-500/20">
-            <h3 className="font-extrabold text-lg mb-2 flex items-center gap-2 text-white">
-              <ShieldCheck size={20} className="text-indigo-400 animate-pulse" /> Blockchain Ledger
-            </h3>
-            <p className="text-xs text-text-secondary mb-4 leading-relaxed">
-              Mint your credentials onto a cryptographically secure ledger to lock in your parsed resume qualifications decetralized.
-            </p>
-            <button 
-              onClick={() => onNavigateToTab('blockchain')}
-              style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '0.5rem', background: 'rgba(99,102,241,0.15)', color: '#818cf8', border: '1px solid rgba(99,102,241,0.3)', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }}
-            >
-              Verify on Blockchain <ShieldCheck size={14} />
-            </button>
-          </div>
-
+          {/* Feature Cards */}
+          {featureCards.map((f, i) => {
+            const Icon = f.icon;
+            return (
+              <motion.div
+                key={i}
+                whileHover={{ y: -2 }}
+                style={{ background: f.bg, border: `1px solid ${f.border}`, borderRadius: '1.25rem', padding: '1.25rem' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.625rem' }}>
+                  <div style={{ padding: '0.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '0.5rem', color: f.color, display: 'flex' }}>
+                    <Icon size={18} />
+                  </div>
+                  <h4 style={{ fontWeight: 800, fontSize: '0.95rem', color: 'white', margin: 0 }}>{f.title}</h4>
+                </div>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '0.875rem', lineHeight: 1.5 }}>{f.desc}</p>
+                <button
+                  onClick={f.action}
+                  style={{ width: '100%', padding: '0.625rem', background: f.btnBg, color: f.btnColor, border: f.btnBorder, borderRadius: '0.5rem', fontWeight: 800, fontSize: '0.78rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', transition: 'all 0.2s' }}
+                >
+                  {f.btnLabel} <ArrowRight size={13} />
+                </button>
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* Right Side: Resume, Skills & Application Timeline */}
+        {/* ── Right Column: Applications ── */}
         <div className="md:col-span-2 space-y-6">
-          <div className="grid sm:grid-cols-2 gap-6">
-            
-            {/* Resume Control Widget */}
-            <div className="card p-6">
-              <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <FileText size={20} className="text-primary" /> Resume Analyzer
+
+          {/* Application Timeline */}
+          <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '1.25rem', padding: '1.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+              <h3 style={{ fontWeight: 900, fontSize: '1.2rem', color: 'white', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Briefcase size={20} style={{ color: 'var(--primary)' }} /> Application Dossier
               </h3>
-              
-              {uploadedFileName ? (
-                <div className="space-y-4">
-                  <div className="p-3 bg-secondary/5 border border-secondary/15 rounded-xl flex items-center gap-3">
-                    <div className="p-2 bg-secondary/10 text-secondary rounded-lg">
-                      <FileText size={18} />
-                    </div>
-                    <div className="flex-1 overflow-hidden">
-                      <div className="text-xs text-text-secondary font-medium">Active File</div>
-                      <div className="text-sm font-semibold text-white truncate">{uploadedFileName}</div>
-                    </div>
-                  </div>
-
-                  <div className="text-xs text-text-secondary">
-                    Uploaded resume parsed successfully. <strong>{user.skills ? user.skills.length : 0} skills</strong> synced with HireHub.
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <label style={{ flex: 1, padding: '0.625rem 0.75rem', background: 'rgba(168,85,247,0.15)', border: '1px solid rgba(168,85,247,0.3)', color: '#c084fc', borderRadius: '0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700 }}>
-                      <RefreshCw size={13} className={isUploading ? 'animate-spin' : ''} />
-                      {isUploading ? "Uploading..." : "Replace PDF"}
-                      <input 
-                        type="file" 
-                        onChange={handleDashboardResumeUpload} 
-                        accept=".pdf" 
-                        className="hidden" 
-                        disabled={isUploading}
-                      />
-                    </label>
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        const token = localStorage.getItem('token');
-                        if (token) {
-                          fetch(apiUrl('/api/resume/delete'), {
-                            method: 'DELETE',
-                            headers: { Authorization: `Bearer ${token}` }
-                          }).catch(e => {});
-                        }
-                        onUploadSuccess('', []);
-                      }}
-                      style={{ padding: '0.625rem 0.875rem', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', color: '#f87171', borderRadius: '0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontSize: '0.78rem', fontWeight: 700 }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-6">
-                  <p className="text-sm text-text-secondary mb-6">No resume file uploaded yet.</p>
-                  <label className="btn btn-primary w-full py-2.5 text-xs cursor-pointer flex items-center justify-center gap-2">
-                    <FileText size={14} className={isUploading ? 'animate-spin' : ''} />
-                    {isUploading ? "Uploading..." : "Upload Resume (PDF)"}
-                    <input 
-                      type="file" 
-                      onChange={handleDashboardResumeUpload} 
-                      accept=".pdf" 
-                      className="hidden" 
-                      disabled={isUploading}
-                    />
-                  </label>
-                </div>
-              )}
-            </div>
-
-            {/* User Skills Widget */}
-            <div className="card p-6">
-              <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <CheckCircle2 size={20} className="text-secondary" /> Registered Skills
-              </h3>
-              {user.skills && user.skills.length > 0 ? (
-                <div className="flex flex-wrap gap-2 overflow-y-auto max-h-[140px] pr-1">
-                  {user.skills.map((skill, si) => (
-                    <span 
-                      key={si} 
-                      className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-lg text-xs font-medium text-white"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-text-secondary">
-                  Upload a CV file or pass credential tests to automatically list your technical skills here.
-                </p>
-              )}
-            </div>
-
-          </div>
-
-          {/* Application History Timeline */}
-          <div className="card p-8 border border-white/5">
-            <div className="flex items-center justify-between mb-8 border-b border-white/5 pb-4">
-              <h3 className="text-2xl font-bold flex items-center gap-2">
-                <Briefcase size={22} className="text-primary" /> Application Dossier Status
-              </h3>
-              <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-extrabold rounded-full">
-                {applications.length} Applied
+              <span style={{ padding: '3px 12px', background: 'rgba(168,85,247,0.12)', border: '1px solid rgba(168,85,247,0.25)', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)' }}>
+                {applications.length} Submitted
               </span>
             </div>
 
             {isLoading ? (
-              <div className="flex flex-col items-center justify-center py-16 gap-3">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                <p className="text-text-secondary text-sm">Loading applications...</p>
+              <div style={{ padding: '4rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ width: '36px', height: '36px', border: '3px solid rgba(168,85,247,0.3)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Loading applications...</p>
               </div>
             ) : applications.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="p-4 bg-white/5 rounded-full inline-flex text-text-secondary mb-4">
-                  <Compass size={32} />
+              <div style={{ padding: '3.5rem 1rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.04)', borderRadius: '50%', marginBottom: '1rem', color: 'var(--text-secondary)' }}>
+                  <Compass size={36} />
                 </div>
-                <h4 className="text-lg font-bold mb-1">Your dossier is empty!</h4>
-                <p className="text-text-secondary text-sm max-w-md mx-auto mb-6">
-                  You haven't submitted any applications yet. Browse the available open positions, click to see gap analysis, and submit your first application.
+                <h4 style={{ fontWeight: 800, fontSize: '1.1rem', color: 'white', margin: '0 0 0.5rem' }}>No Applications Yet</h4>
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', maxWidth: '380px', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+                  Browse open positions and submit your first application to begin tracking your dossier status here.
                 </p>
-                <button 
+                <button
                   onClick={onBackToJobs}
-                  className="btn btn-primary px-6 py-2.5 text-sm"
+                  style={{ padding: '0.75rem 2rem', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '0.625rem', fontWeight: 800, fontSize: '0.85rem', cursor: 'pointer', boxShadow: '0 4px 14px rgba(168,85,247,0.35)' }}
                 >
                   Find Openings Now
                 </button>
               </div>
             ) : (
-              <div className="space-y-6 relative before:absolute before:left-6 before:top-2 before:bottom-2 before:w-0.5 before:bg-white/5">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {applications.map((app, index) => {
-                  let statusBg = "bg-primary/10 text-primary border-primary/20";
-                  if (app.status === 'Under Review') statusBg = "bg-accent/10 text-accent border-accent/20";
-                  if (app.status === 'Interview Scheduled') statusBg = "bg-yellow-500/10 text-yellow-400 border-yellow-500/20";
-                  if (app.status === 'Offered') statusBg = "bg-secondary/10 text-secondary border-secondary/20";
+                  const statusConfig = {
+                    'Applied':              { color: '#a78bfa', bg: 'rgba(168,85,247,0.1)', border: 'rgba(168,85,247,0.2)' },
+                    'Under Review':         { color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.2)' },
+                    'Interview Scheduled':  { color: '#38bdf8', bg: 'rgba(56,189,248,0.1)', border: 'rgba(56,189,248,0.2)' },
+                    'Offered':              { color: '#4ade80', bg: 'rgba(34,197,94,0.1)', border: 'rgba(34,197,94,0.2)' },
+                  };
+                  const sc = statusConfig[app.status] || statusConfig['Applied'];
 
                   return (
-                    <motion.div 
+                    <motion.div
                       key={app.id}
-                      initial={{ opacity: 0, y: 15 }}
+                      initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="flex items-start gap-4 relative"
+                      transition={{ delay: index * 0.06 }}
+                      style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '1rem', padding: '1.25rem', transition: 'border-color 0.2s' }}
                     >
-                      {/* Timeline Dot Indicator */}
-                      <div className="w-12 h-12 rounded-full bg-bg-secondary border border-white/10 flex items-center justify-center text-primary font-bold z-10 shrink-0 shadow-lg">
-                        {index + 1}
+                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+                        <div>
+                          <h4 style={{ fontWeight: 800, fontSize: '1rem', color: 'white', margin: '0 0 4px' }}>{app.jobTitle}</h4>
+                          <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', fontWeight: 600, margin: 0 }}>{app.jobCompany}</p>
+                        </div>
+                        <span style={{ padding: '4px 12px', background: sc.bg, border: `1px solid ${sc.border}`, borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800, color: sc.color, flexShrink: 0 }}>
+                          {app.status}
+                        </span>
                       </div>
 
-                      <div className="flex-1 p-5 glass border border-white/5 bg-white/5 rounded-2xl hover:border-primary/30 transition-all">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-                          <div>
-                            <h4 className="font-bold text-lg text-white">{app.jobTitle}</h4>
-                            <p className="text-sm font-semibold text-text-secondary">{app.jobCompany}</p>
-                          </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-bold border shrink-0 ${statusBg}`}>
-                            {app.status}
-                          </span>
-                        </div>
-
-                        <div className="flex flex-wrap gap-4 text-xs text-text-secondary border-t border-white/5 pt-3">
-                          <div className="flex items-center gap-1">
-                            <MapPin size={14} />
-                            <span>{app.jobLocation}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <DollarSign size={14} />
-                            <span>{app.jobSalary}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Calendar size={14} />
-                            <span>Applied: {new Date(app.createdAt).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}</span>
-                          </div>
-                        </div>
-
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', fontSize: '0.78rem', color: 'var(--text-secondary)', paddingTop: '0.75rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <MapPin size={13} /> {app.jobLocation}
+                        </span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <IndianRupee size={13} /> {app.jobSalary}
+                        </span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <Calendar size={13} /> Applied: {new Date(app.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
                         {app.resumeName && (
-                          <div className="mt-3 p-2 bg-black/25 rounded-lg text-xs text-secondary font-medium inline-flex items-center gap-1.5">
-                            <FileText size={12} />
-                            <span>Attached CV: {app.resumeName}</span>
-                          </div>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#4ade80' }}>
+                            <FileText size={13} /> {app.resumeName}
+                          </span>
                         )}
                       </div>
                     </motion.div>
@@ -494,7 +370,6 @@ export default function UserDashboard({ user, onBackToJobs, uploadedFileName, on
             )}
           </div>
         </div>
-
       </div>
     </div>
   );

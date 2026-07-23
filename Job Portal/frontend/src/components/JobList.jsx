@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiUrl } from '../api.js';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, DollarSign, Zap, ArrowUpRight, X, FileText, Check, Loader2, Award, AlertCircle } from 'lucide-react';
+import { MapPin, IndianRupee, Zap, ArrowUpRight, X, FileText, Check, Loader2, Award, AlertCircle } from 'lucide-react';
 
 export default function JobList({ uploadedFileName, activeJobId, setActiveJobId, user }) {
   const [jobs, setJobs] = useState([]);
@@ -207,7 +207,7 @@ export default function JobList({ uploadedFileName, activeJobId, setActiveJobId,
                           <span>{job.location}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <DollarSign size={16} />
+                          <IndianRupee size={16} />
                           <span>{job.salary}</span>
                         </div>
                       </div>

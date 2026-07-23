@@ -5,13 +5,11 @@ export default function Navbar({ user, onLogout, setIsAuthOpen, currentView, onS
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { id: 'landing',         label: 'Find Jobs',          icon: Briefcase },
+    { id: 'landing',         label: 'Overview',          icon: Briefcase },
     { id: 'resume-analyzer', label: 'Resume Intelligence',icon: FileText },
     { id: 'dashboard',       label: 'Command Center',    icon: Compass },
     { id: 'chatbot',         label: 'Career AI Chat',     icon: Sparkles },
-    { id: 'interview',       label: 'Video Interview',    icon: Video },
     { id: 'predictor',       label: 'Salary Forecast',    icon: TrendingUp },
-    { id: 'blockchain',      label: 'Blockchain Ledger',  icon: ShieldCheck },
   ];
 
   const handleNavClick = (viewId) => {

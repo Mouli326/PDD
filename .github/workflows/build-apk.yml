@@ -28,43 +28,24 @@ jobs:
           node-version: '18'
 
       - name: Install frontend dependencies (includes @capacitor/android)
-        working-directory: Job Portal/frontend
+        working-directory: "Job Portal/frontend"
         run: npm install
 
-      - name: Restore correct AGP 8.x build files for CI
-        working-directory: Job Portal/android
-        run: |
-          # Restore AGP to latest (CI has Java 17)
-          sed -i "s/com.android.tools.build:gradle:7.4.2/com.android.tools.build:gradle:8.5.0/" build.gradle
-          # Restore Gradle wrapper to 8.7 (compatible with AGP 8.5)
-          sed -i "s|gradle-7.5-all.zip|gradle-8.7-all.zip|" gradle/wrapper/gradle-wrapper.properties
-          # Restore Java version to 17 in capacitor build
-          sed -i "s/JavaVersion.VERSION_11/JavaVersion.VERSION_17/" app/capacitor.build.gradle
-          # Restore SDK versions to 34
-          sed -i "s/compileSdkVersion = 33/compileSdkVersion = 34/" variables.gradle
-          sed -i "s/targetSdkVersion = 33/targetSdkVersion = 34/" variables.gradle
-          # Point capacitor to frontend node_modules
-          sed -i "s|'../node_modules/@capacitor/android/capacitor'|'../frontend/node_modules/@capacitor/android/capacitor'|" capacitor.settings.gradle
-          cat build.gradle | grep classpath
-          cat variables.gradle
-
-      - name: Set Android SDK path
-        working-directory: Job Portal/android
-        run: |
-          echo "sdk.dir=$ANDROID_HOME" > local.properties
-          cat local.properties
+      - name: Write Android SDK path to local.properties
+        working-directory: "Job Portal/android"
+        run: echo "sdk.dir=$ANDROID_HOME" > local.properties
 
       - name: Grant execute permission to Gradlew
-        working-directory: Job Portal/android
+        working-directory: "Job Portal/android"
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        working-directory: Job Portal/android
+        working-directory: "Job Portal/android"
         run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: JobPortal-debug-apk
-          path: Job Portal/android/app/build/outputs/apk/debug/app-debug.apk
+          path: "Job Portal/android/app/build/outputs/apk/debug/app-debug.apk"
           retention-days: 30

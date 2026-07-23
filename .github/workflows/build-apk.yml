@@ -27,9 +27,16 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install frontend dependencies (includes @capacitor/android)
+      - name: Build Web Application
         working-directory: "Job Portal/frontend"
-        run: npm install
+        run: |
+          npm install
+          npm run build
+
+      - name: Copy Web Dist to Android Assets
+        run: |
+          mkdir -p "Job Portal/android/app/src/main/assets/public"
+          cp -r "Job Portal/frontend/dist/"* "Job Portal/android/app/src/main/assets/public/"
 
       - name: Write Android SDK path to local.properties
         working-directory: "Job Portal/android"

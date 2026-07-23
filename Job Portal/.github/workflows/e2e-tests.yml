@@ -13,193 +13,194 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Install Dependencies & Run Selenium Web Suite
         run: |
-          cd e2e_framework
+          cd "Job Portal/e2e_framework"
           npm install
           node 01_selenium_web_tests.js
 
       - name: Upload Selenium Web Report Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: selenium-web-report
-          path: e2e_framework/reports/selenium-web-report.xlsx
+          path: "Job Portal/e2e_framework/reports/selenium-web-report.xlsx"
 
   appium-android-tests:
     name: Appium — Android Tests (300)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Install Dependencies & Run Appium Android Suite
         run: |
-          cd e2e_framework
+          cd "Job Portal/e2e_framework"
           npm install
           node 02_appium_android_tests.js
 
       - name: Upload Appium Android Report Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: appium-android-report
-          path: e2e_framework/reports/appium-android-report.xlsx
+          path: "Job Portal/e2e_framework/reports/appium-android-report.xlsx"
 
   unit-tests-api:
     name: Unit Tests — API (300)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Install Dependencies & Run API Unit Suite
         run: |
-          cd e2e_framework
+          cd "Job Portal/e2e_framework"
           npm install
           node 03_unit_api_tests.js
 
       - name: Upload Unit Test Report Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: unit-test-report
-          path: e2e_framework/reports/unit-test-report.xlsx
+          path: "Job Portal/e2e_framework/reports/unit-test-report.xlsx"
 
   validation-tests:
     name: Validation Tests (300)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Install Dependencies & Run Validation Suite
         run: |
-          cd e2e_framework
+          cd "Job Portal/e2e_framework"
           npm install
           node 04_validation_tests.js
 
       - name: Upload Validation Test Report Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: validation-test-report
-          path: e2e_framework/reports/validation-test-report.xlsx
+          path: "Job Portal/e2e_framework/reports/validation-test-report.xlsx"
 
   deployment-status:
     name: Deployment Status (300)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Install Dependencies & Run Deployment Status Suite
         run: |
-          cd e2e_framework
+          cd "Job Portal/e2e_framework"
           npm install
           node 05_deployment_tests.js
 
       - name: Upload Deployment Test Report Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: deployment-test-report
-          path: e2e_framework/reports/deployment-test-report.xlsx
+          path: "Job Portal/e2e_framework/reports/deployment-test-report.xlsx"
 
   load-testing-performance:
     name: Load Testing — Performance (300)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Install Dependencies & Run Load Performance Suite
         run: |
-          cd e2e_framework
+          cd "Job Portal/e2e_framework"
           npm install
           node 06_load_performance_tests.js
 
       - name: Upload Load Test Report Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: load-test-report
-          path: e2e_framework/reports/load-test-report.xlsx
+          path: "Job Portal/e2e_framework/reports/load-test-report.xlsx"
 
   compile-master-report:
     name: Compile Master Report & Deploy
     needs: [selenium-web-tests, appium-android-tests, unit-tests-api, validation-tests, deployment-status, load-testing-performance]
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Install Dependencies & Compile Master Report
         run: |
-          cd e2e_framework
+          cd "Job Portal/e2e_framework"
           npm install
           node 07_master_report_compiler.js
 
       - name: Upload Master E2E Report Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: full-e2e-report
-          path: e2e_framework/reports/full-e2e-report.xlsx
+          path: "Job Portal/e2e_framework/reports/full-e2e-report.xlsx"
 
   build-android-apk:
     name: Build Android Mobile APK
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Java 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
       - name: Grant Executable Permission for Gradlew
-        run: chmod +x android/gradlew
+        run: chmod +x "Job Portal/android/gradlew"
 
       - name: Build Debug APK with Gradle
         run: |
-          cd android
-          ./gradlew assembleDebug --stacktrace
+          cd "Job Portal/android"
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload Android APK Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: "Job Portal/android/app/build/outputs/apk/debug/app-debug.apk"

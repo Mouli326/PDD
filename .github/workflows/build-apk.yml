@@ -35,13 +35,23 @@ jobs:
         working-directory: "Job Portal/android"
         run: echo "sdk.dir=$ANDROID_HOME" > local.properties
 
+      - name: Remove any user-level gradle.properties that may override java.home
+        run: |
+          rm -f ~/.gradle/gradle.properties
+          echo "Cleared user gradle.properties"
+
+      - name: Verify Java version
+        run: java -version
+
       - name: Grant execute permission to Gradlew
         working-directory: "Job Portal/android"
         run: chmod +x gradlew
 
       - name: Build Debug APK
         working-directory: "Job Portal/android"
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME }}
+        run: ./gradlew assembleDebug --no-daemon --stacktrace -Dorg.gradle.java.home=$JAVA_HOME
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
